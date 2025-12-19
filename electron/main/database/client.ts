@@ -39,9 +39,11 @@ export function getDatabase(): LibSQLDatabase<typeof schema> {
   const isCloudEnabled = Boolean(syncUrl && authToken)
 
   if (isCloudEnabled) {
-    console.log(`[WizPed] ☁️ Conectando...`)
+    // Cyan (*) for connecting
+    console.log(`\x1b[36m(*)\x1b[0m [WizPed] Conectando...`)
   } else {
-    console.error('⚠️ [WizPed] Offline (Sem credenciais)')
+    // Red (!) for offline
+    console.error('\x1b[31m(!)\x1b[0m [WizPed] Offline (Sem credenciais)')
   }
 
   client = (createClient as unknown as (config: unknown) => Client)({
