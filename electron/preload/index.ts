@@ -9,6 +9,11 @@ const ALLOWED_CHANNELS = new Set<keyof IpcEvents>([
   'users:create',
   'users:update',
   'users:delete',
+  'estudantes:getAll',
+  'estudantes:getById',
+  'estudantes:create',
+  'estudantes:update',
+  'estudantes:delete',
 ])
 
 // Security: Validate channel before invoking

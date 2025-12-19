@@ -1,4 +1,4 @@
-import type { User, NewUser } from '@main/database/schema'
+import type { User, NewUser, Student, NewStudent } from '@main/database/schema'
 
 export interface IpcEvents {
   'users:getAll': {
@@ -18,6 +18,26 @@ export interface IpcEvents {
     response: User
   }
   'users:delete': {
+    request: [id: string]
+    response: boolean
+  }
+  'estudantes:getAll': {
+    request: []
+    response: Student[]
+  }
+  'estudantes:getById': {
+    request: [id: string]
+    response: Student | null
+  }
+  'estudantes:create': {
+    request: [data: NewStudent]
+    response: Student
+  }
+  'estudantes:update': {
+    request: [id: string, data: Partial<NewStudent>]
+    response: Student
+  }
+  'estudantes:delete': {
     request: [id: string]
     response: boolean
   }

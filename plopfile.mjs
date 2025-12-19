@@ -40,11 +40,13 @@ export default function (plop) {
         path: 'src/features/{{kebabCase name}}/services/{{kebabCase name}}.service.ts',
         templateFile: 'plop-templates/feature/service.ts.hbs',
       },
+      /*
       {
         type: 'add',
         path: 'src/features/{{kebabCase name}}/types/index.ts',
         templateFile: 'plop-templates/feature/types.ts.hbs',
       },
+      */
       {
         type: 'add',
         path: 'electron/main/ipc/handlers/{{kebabCase name}}.handlers.ts',
