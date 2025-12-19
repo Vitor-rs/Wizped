@@ -6,23 +6,14 @@ trigger: always_on
 
 ## Usage Policy
 
-We have a local copy of the Shadcn documentation and components in `.templat\shadcn_guide`.
-**YOU MUST PREFER THIS LOCAL GUIDE OVER INTERNET SEARCH.**e
+### 🔵 Antigravity Users (MCP Enabled)
+You have the **Shadcn MCP Server** configured.
+1. **Prefer the MCP**: Use the `shadcn` tool to fetch component code and dependencies directly from the registry.
+2. **Fallback**: If the MCP fails, consult the local guide in `.template/shadcn_guide`.
 
-## How to Explore the Guide
+### 🟢 VS Code Users
+1. **Primary Source**: Consult the local copy in `.template/shadcn_guide`.
+2. **Execution**: Use `npx shadcn@latest add <component>` in the terminal.
 
-To view the full structure of the available documentation, run the following command:
-`python scripts/tree_shadcn.py`
-This will output the file tree of `.agent/shadcn_guide`.
-
-## How to Find Components
-
-1. **Explore**: Run the tree script above to locate the component you need.
-2. **Read**: Look in `.agent/shadcn_guide/components_db/[Component].md` or `registry` for implementation details.
-3. **Registry Fallback (MCP)**:
-   - If the local guide is ambiguous or missing a specific registry item, use the **Shadcn MCP** tools.
-   - Use `shadcn` tools to query the live registry for the latest component definitions (e.g., `@acme` components).
-
-## LLM Helper
-
-Refer to `.agent/shadcn_guide/llms.txt` for official documentation links if local context is insufficient.
+## How to Find Components (Manual)
+Run `python scripts/tree_shadcn.py` to see the local structure.

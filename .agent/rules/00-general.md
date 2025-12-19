@@ -5,29 +5,32 @@ trigger: always_on
 # 00-general.md - Princípios e Protocolo de Análise
 
 ## 🧠 Protocolo de Interação com IA (OBRIGATÓRIO)
-Antes de escrever qualquer linha de código ou executar comandos, analise o pedido seguindo este fluxo:
+Antes de escrever código, analise o pedido seguindo este fluxo:
 
 1.  **Entendimento do Contexto**:
-    * Qual é a Feature (Domínio) envolvida? (Ex: `users`, `students`, `settings`).
-    * O ambiente atual suporta MCPs? (Verifique a secção "Regra de Ambiente" abaixo).
-2.  **Verificação de Regras ("Check the Book")**:
-    * **Estrutura**: Consulte `.agent/rules/01-architecture.md`.
-    * **Padrões & Workflows**: Consulte `.agent/rules/02-standards.md` (Crucial para criar features).
-    * **Segurança**: Consulte `.agent/rules/03-security.md`.
-    * **UI**: Consulte `.template/shadcn_guide` antes de criar componentes.
+    * Qual é a Feature? (Ex: `users`, `students`).
+    * **Check de Ferramentas**: Estou no Antigravity (com GitKraken/Shadcn) ou VS Code?
+2.  **Verificação de Regras**:
+    * **Estrutura**: `.agent/rules/01-architecture.md`
+    * **Workflows**: `.agent/rules/02-standards.md`
+    * **Segurança**: `.agent/rules/03-security.md`
+    * **UI**: `.template/shadcn_guide` (ou MCP `shadcn` no Antigravity).
 3.  **Planejamento**:
-    * Liste mentalmente os ficheiros que serão criados ou modificados.
-    * Verifique se já existe um script em `scripts/` ou comando `npm run` para a tarefa.
+    * Se a tarefa for complexa e você estiver no Antigravity, use a tool `sequential-thinking` para estruturar os passos.
 4.  **Execução**:
-    * **Agent-First**: Priorize ferramentas automatizadas (`npm run generate`, `npm run db:migrate`) sobre edição manual.
-    * **Robustez**: Não faça "gambiarras". Se faltar um tipo, defina-o corretamente.
+    * Priorize `npm run generate` (Plop) para criar arquivos.
 
-## 🌍 Regra de Ambiente (MCPs vs Nativo)
-Adapte a sua abordagem dependendo de onde você está a rodar:
+## 🌍 Regra de Ambiente & Ferramentas (MCPs)
 
-- **VS Code (Copilot/GitHub)**:
-  - ✅ **MCPs Ativos**: Você TEM acesso a ferramentas do Workspace e Banco de Dados. Utilize-as para leitura direta e operações complexas.
-  
-- **Google Antigravity (Agent)**:
-  - ❌ **Sem MCPs de Projeto**: Você NÃO tem acesso direto a ferramentas externas configuradas via MCP.
-  - **Alternativa**: Utilize ferramentas nativas de ficheiros (`read_file`, `grep`, `tree`) e scripts do projeto (`npm run db:studio` ou scripts Python em `scripts/`) para obter contexto.
+### 🔵 Google Antigravity (Agent)
+**Status**: ✅ MCPs de Elite Ativos via `mcp_config.json`.
+- **UI**: Use o MCP `shadcn` para buscar componentes atualizados (ex: `shadcn.get_component`).
+- **Git**: Use o MCP `GitKraken` para diffs e histórico visual.
+- **Raciocínio**: Use o MCP `sequential-thinking` para problemas de lógica complexa.
+- **Limitação**: Para acesso a arquivos locais simples, use as ferramentas nativas (`read_file`).
+
+### 🟢 VS Code (Copilot/GitHub Agent)
+**Status**: ✅ MCPs de Utilidade (`markitdown`).
+- **Docs**: Use o MCP `markitdown` para converter arquivos ou ler documentação externa se necessário.
+- **UI**: Dependa mais do guia local em `.template/shadcn_guide`, pois o MCP do shadcn pode não estar ativo aqui.
+- **Geral**: Use as ferramentas nativas do VS Code para terminal e edição.

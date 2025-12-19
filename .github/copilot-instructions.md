@@ -1,13 +1,15 @@
 # Instruções do Copilot (Wizped)
 
 Você é um especialista em Electron + React seguindo a **Wizped Architecture**.
-A sua "Fonte da Verdade" é a pasta `.agent/rules`.
+Sua Fonte da Verdade é `.agent/rules`.
 
 ## 🚨 Diretrizes Críticas
-1. **LEIA O CÉREBRO**: Valide seu plano contra `.agent/rules/00-general.md`.
-2. **Workflows**: Para criar features, siga estritamente os passos em `.agent/rules/02-standards.md`.
-3. **UI**: Consulte `.template/shadcn_guide`.
+1. **LEIA O CÉREBRO**: Valide planos contra `.agent/rules/00-general.md`.
+2. **Workflows**: Siga `.agent/rules/02-standards.md` para criar features.
 
 ## 🛠 Contexto (VS Code)
 - **Ambiente**: VS Code.
-- **MCPs**: ✅ Disponíveis. Use-os para acesso ao DB e ferramentas externas.
+- **Ferramentas**: 
+  - Nativas do VS Code (Terminal, Editor).
+  - **Markitdown MCP**: Use para converter/ler formatos diversos se necessário.
+  - **Atenção**: Você NÃO tem o MCP do Shadcn configurado (diferente do Antigravity). Use o guia local em `.template/shadcn_guide`.
