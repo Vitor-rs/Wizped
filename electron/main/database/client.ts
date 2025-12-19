@@ -1,33 +1,79 @@
-import Database from 'better-sqlite3'
-import { drizzle } from 'drizzle-orm/better-sqlite3'
+import { createClient } from '@libsql/client'
+import type { Client } from '@libsql/core/api'
+import { drizzle, type LibSQLDatabase } from 'drizzle-orm/libsql'
 import { app } from 'electron'
-import { join } from 'node:path'
+import { existsSync, mkdirSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import * as schema from './schema'
 
-const DB_NAME = 'app-data.db'
+const DB_FILENAME = 'wizped-local.db'
+
+const TURSO_URL = process.env.TURSO_DATABASE_URL
+const TURSO_TOKEN = process.env.TURSO_AUTH_TOKEN
 
 function getDatabasePath(): string {
-  const userDataPath = app.getPath('userData')
-  return join(userDataPath, DB_NAME)
+  if (app.isPackaged) {
+    return join(dirname(process.execPath), 'data', DB_FILENAME)
+  }
+  return join(process.cwd(), 'resources', DB_FILENAME)
 }
 
-let sqlite: Database.Database | null = null
-let db: ReturnType<typeof drizzle<typeof schema>> | null = null
+let client: Client | null = null
+let db: LibSQLDatabase<typeof schema> | null = null
 
-export function getDatabase(): ReturnType<typeof drizzle<typeof schema>> {
-  if (!db) {
-    sqlite = new Database(getDatabasePath())
-    sqlite.pragma('journal_mode = WAL')
-    sqlite.pragma('foreign_keys = ON')
-    db = drizzle(sqlite, { schema })
+export function getDatabase(): LibSQLDatabase<typeof schema> {
+  if (db) {
+    return db
   }
+
+  const dbPath = getDatabasePath()
+  const dbDir = dirname(dbPath)
+
+  if (!existsSync(dbDir)) {
+    mkdirSync(dbDir, { recursive: true })
+  }
+
+  const url = `file:${dbPath}`
+  const authToken = TURSO_TOKEN ?? undefined
+  const syncUrl = TURSO_URL ?? undefined
+  const isCloudEnabled = Boolean(syncUrl && authToken)
+
+  if (isCloudEnabled) {
+    console.log(`[WizPed] ☁️ Conectando...`)
+  } else {
+    console.error('⚠️ [WizPed] Offline (Sem credenciais)')
+  }
+
+  client = (createClient as unknown as (config: unknown) => Client)({
+    url,
+    authToken,
+    syncUrl,
+  })
+
+  if (isCloudEnabled) {
+    setInterval(() => {
+      void (async () => {
+        try {
+          await client?.sync()
+        } catch {
+          // Ignora erros de rede silenciosamente em background
+        }
+      })()
+    }, 60 * 1000)
+
+    void client.sync().catch(() => {
+      console.log('[Sync] Offline init')
+    })
+  }
+
+  db = drizzle(client, { schema })
   return db
 }
 
 export function closeDatabase(): void {
-  if (sqlite) {
-    sqlite.close()
-    sqlite = null
+  if (client) {
+    client.close()
+    client = null
     db = null
   }
 }

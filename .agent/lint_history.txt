@@ -94,3 +94,106 @@ Checking formatting...
 [warn] tsconfig.json
 [warn] tsconfig.preload.json
 Error occurred when checking code style in 3 files.
+
+----------------------------------------
+[LINT RUN] 2025-12-18 22:50:55
+----------------------------------------
+
+
+C:\Users\Vitor\Documents\projetos\Wizped\electron\main\database\client.ts
+  53:12  error  This assertion is unnecessary since it does not change the type of the expression  @typescript-eslint/no-unnecessary-type-assertion
+
+Ô£û 1 problem (1 error, 0 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+
+
+[PRETTIER CHECK]
+
+Checking formatting...
+[warn] .agent/rules/01-architecture.md
+[warn] .agent/rules/03-security.md
+[warn] .agent/rules/08-ai-interaction.md
+[warn] .agent/workflows/scaffold_feature.md
+[warn] .github/agents/electron-architect.agent.md
+[warn] .github/copilot-instructions.md
+[warn] .github/prompts/scaffold-feature.prompt.md
+[warn] .github/prompts/verify-project.prompt.md
+[warn] .github/prompts/view-project-tree.prompt.md
+[warn] .github/workflows/security-audit.yml
+[warn] .lintstagedrc.mjs
+[warn] .vscode/extensions.json
+[warn] .vscode/settings.json
+[warn] commitlint.config.mjs
+[warn] docs/PROJECT_STRUC_DOCS.md
+[warn] docs/README.md
+[warn] electron-builder.yml
+[warn] eslint.config.mjs
+[warn] index.html
+[warn] plop-templates/component/component.tsx.hbs
+[warn] plop-templates/component/index.ts.hbs
+[error] plop-templates/feature/handler.ts.hbs: SyntaxError: Unclosed element `string,` (28:25)
+[error]   26 |     const result = db
+[error]   27 |       .update({{camelCase name}}s)
+[error] > 28 |       .set(data as Record<string, unknown>)
+[error]      |                         ^^^^^^^^^^^^^^^^^
+[error]   29 |       .where(eq({{camelCase name}}s.id, id))
+[error]   30 |       .returning()
+[error]   31 |       .get()
+[warn] plop-templates/feature/index.ts.hbs
+[error] plop-templates/feature/schema.ts.hbs: SyntaxError: Unclosed element `typeof` (19:55)
+[error]   17 |
+[error]   18 | export type {{pascalCase name}}FormData = z.infer<typeof create{{pascalCase name}}Schema>
+[error] > 19 | export type Update{{pascalCase name}}FormData = z.infer<typeof update{{pascalCase name}}Schema>
+[error]      |                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[error]   20 |
+[error] plop-templates/feature/service.ts.hbs: SyntaxError: Cannot use mustaches in an elements tagname (23:37)
+[error]   21 |
+[error]   22 |   async update(id: string, data: Record<string, unknown>) {
+[error] > 23 |     // TODO: Replace with Partial<New{{pascalCase name}}> after defining
+[error]      |                                     ^^^^^^^^^^^^^^^^^^^
+[error]   24 |     return window.electronAPI.invoke('{{kebabCase name}}:update', id, data)
+[error]   25 |   },
+[error]   26 |
+[error] plop-templates/feature/store.ts.hbs: SyntaxError: Cannot use mustaches in an elements tagname (20:50)
+[error]   18 | }
+[error]   19 |
+[error] > 20 | export const use{{pascalCase name}}Store = create<{{pascalCase name}}State & {{pascalCase name}}Actions>()(
+[error]      |                                                  ^^^^^^^^^^^^^^^^^^^
+[error]   21 |   devtools(
+[error]   22 |     (set) => ({
+[error]   23 |       ...initialState,
+[warn] plop-templates/feature/types.ts.hbs
+[error] plop-templates/store/store.ts.hbs: SyntaxError: Cannot use mustaches in an elements tagname (20:50)
+[error]   18 | }
+[error]   19 |
+[error] > 20 | export const use{{pascalCase name}}Store = create<{{pascalCase name}}State & {{pascalCase name}}Actions>()(
+[error]      |                                                  ^^^^^^^^^^^^^^^^^^^
+[error]   21 |   devtools(
+[error]   22 |     (set) => ({
+[error]   23 |       ...initialState,
+[warn] plopfile.mjs
+[warn] postcss.config.mjs
+[warn] prettier.config.mjs
+[warn] src/app/components/AppSidebar.tsx
+[warn] src/app/layouts/RootLayout.tsx
+[warn] src/features/home/components/HomePage.tsx
+[warn] src/features/users/services/user.service.ts
+[warn] src/features/users/stores/user.store.ts
+[warn] src/index.css
+[warn] src/shared/components/ui/badge.tsx
+[warn] src/shared/components/ui/button.tsx
+[warn] src/shared/components/ui/card.tsx
+[warn] src/shared/components/ui/input.tsx
+[warn] src/shared/components/ui/scroll-area.tsx
+[warn] src/shared/components/ui/separator.tsx
+[warn] src/shared/components/ui/sheet.tsx
+[warn] src/shared/components/ui/sidebar.tsx
+[warn] src/shared/components/ui/skeleton.tsx
+[warn] src/shared/components/ui/tooltip.tsx
+[warn] src/shared/hooks/use-mobile.ts
+[warn] src/shared/types/ipc.ts
+[warn] tailwind.config.js
+[warn] tsconfig.json
+[warn] tsconfig.web.json
+[warn] Wizped.code-workspace
+Error occurred when checking code style in 5 files.

@@ -1,22 +1,49 @@
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
 import { sql } from 'drizzle-orm'
 
-// Example entity schema - customize for your needs
+// --- USERS (Professores) ---
 export const users = sqliteTable('users', {
   id: text('id')
     .primaryKey()
     .$default(() => crypto.randomUUID()),
   name: text('name').notNull(),
   email: text('email').unique(),
-  createdAt: integer('created_at', { mode: 'timestamp' })
-    .notNull()
-    .default(sql`(unixepoch())`),
+  role: text('role').default('teacher'), // teacher | admin
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
   updatedAt: integer('updated_at', { mode: 'timestamp' })
-    .notNull()
     .default(sql`(unixepoch())`)
     .$onUpdate(() => new Date()),
 })
 
-// Inferred types for TypeScript
+// --- STUDENTS (Alunos) ---
+export const students = sqliteTable('students', {
+  id: text('id')
+    .primaryKey()
+    .$default(() => crypto.randomUUID()),
+  name: text('name').notNull(),
+
+  // Dados Wizard
+  book: text('book'), // Ex: W2, T8, W4
+  classTime: text('class_time'), // Ex: "Seg/Qua 18:00"
+
+  // Dados Pessoais/Responsável
+  birthDate: text('birth_date'), // YYYY-MM-DD
+  responsibleName: text('responsible_name'),
+  phone: text('phone'),
+
+  // Metadados
+  active: integer('active', { mode: 'boolean' }).default(true),
+  notes: text('notes'),
+
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' })
+    .default(sql`(unixepoch())`)
+    .$onUpdate(() => new Date()),
+})
+
+// Inferência de Tipos
 export type User = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
+
+export type Student = typeof students.$inferSelect
+export type NewStudent = typeof students.$inferInsert
