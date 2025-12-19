@@ -4,4 +4,4 @@ activation: manual
 ---
 
 1. Execute the project tree script.
-   Command: `python scripts/tree_project.py`
+   Command: `python scripts/doc_project.py -t`
