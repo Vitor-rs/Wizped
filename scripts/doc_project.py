@@ -4,7 +4,7 @@ import argparse
 import sys
 
 # Configurações Globais
-IGNORE_DIRS = {'.git', 'node_modules', 'out', 'dist', '.vscode', '.idea', '__pycache__', '.agent', 'coverage', 'resources'}
+IGNORE_DIRS = {'.git', 'node_modules', 'out', 'dist', '.vscode', '.idea', '__pycache__', '.agent', 'coverage', 'resources', 'shadcn_guide'}
 IGNORE_FILES = {'package-lock.json', 'pnpm-lock.yaml', 'yarn.lock', 'PROJECT_STRUC_DOCS.md', '.DS_Store', 'thumbs.db'}
 OUTPUT_FILE = 'PROJECT_STRUC_DOCS.md'
 
