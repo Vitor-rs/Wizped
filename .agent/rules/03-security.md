@@ -1,0 +1,38 @@
+---
+activation: always_on
+---
+
+# Security Guidelines
+
+## Overview
+
+This project implements multiple security layers following Electron official best practices.
+Full documentation is available in .template/SECURITY.md.
+
+## Core Security Features
+
+### Main Process (electron/main/index.ts)
+
+- sandbox: true - Renderer isolation
+- contextIsolation: true - Preload script separation
+- nodeIntegration: false - No Node.js in renderer
+- webviewTag: false - Webview disabled
+- Permission Handler - Whitelist-based permissions
+- Navigation Blocking - External URLs blocked
+
+### Preload Script (electron/preload/index.ts)
+
+- **ALLOWED_CHANNELS**: Only whitelisted IPC channels can be invoked
+- When adding new IPC channels, you MUST update ALLOWED_CHANNELS
+
+## Workflow: Adding New IPC Channels
+
+1. Add types in src/shared/types/ipc.ts
+2. Create handler in electron/main/ipc/handlers/name.handlers.ts
+3. Register handler in electron/main/ipc/index.ts
+4. Update ALLOWED_CHANNELS in electron/preload/index.ts
+5. Create service in src/features/name/services/name.service.ts
+
+## Security Audit
+
+Run npm run security:check or use workflow /security_audit to verify.

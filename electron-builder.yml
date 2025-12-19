@@ -1,0 +1,53 @@
+appId: com.wizped.app
+productName: Wizped
+directories:
+  buildResources: resources
+  output: dist
+
+# Security: Enable ASAR archive
+asar: true
+
+# Auto-update: GitHub Releases configuration
+# Uncomment and configure when ready to publish
+# publish:
+#   provider: github
+#   owner: YOUR_GITHUB_USERNAME
+#   repo: YOUR_REPO_NAME
+#   releaseType: release
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.*'
+  - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+asarUnpack:
+  - resources/**
+  - '**/*.node'
+win:
+  executableName: wizped
+  target:
+    - target: nsis
+      arch:
+        - x64
+nsis:
+  artifactName: ${name}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+extraResources:
+  - from: './resources/'
+    to: 'resources'
+    filter:
+      - '**/*'

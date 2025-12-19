@@ -1,0 +1,14 @@
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
+  "compilerOptions": {
+    "composite": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@preload/*": ["electron/preload/*"],
+      "@shared/*": ["src/shared/*"],
+      "@main/*": ["electron/main/*"]
+    }
+  },
+  "include": ["electron/preload/**/*", "src/shared/types/**/*"]
+}
