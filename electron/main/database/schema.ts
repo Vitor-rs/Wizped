@@ -8,6 +8,7 @@ export const users = sqliteTable('users', {
     .$default(() => crypto.randomUUID()),
   name: text('name').notNull(),
   email: text('email').unique(),
+  password: text('password').notNull(),
   role: text('role').default('teacher'), // teacher | admin
   createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
   updatedAt: integer('updated_at', { mode: 'timestamp' })

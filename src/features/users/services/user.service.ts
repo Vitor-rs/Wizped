@@ -1,4 +1,4 @@
-import type { User, NewUser } from '@main/database/schema'
+import type { User, NewUser } from '../../../../electron/main/database/schema'
 
 export const userService = {
   async getAll(): Promise<User[]> {

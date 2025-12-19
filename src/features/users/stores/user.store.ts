@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import type { User } from '@main/database/schema'
+import type { User } from '../../../../electron/main/database/schema'
 
 interface UserState {
   users: User[]

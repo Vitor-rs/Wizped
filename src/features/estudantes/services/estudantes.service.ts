@@ -4,7 +4,7 @@
 // TODO: Import your feature types after defining them
 // import type { Estudantes, NewEstudantes } from '../types'
 
-import type { NewStudent } from '@main/database/schema'
+import type { NewStudent } from '../../../../electron/main/database/schema'
 
 export const estudantesService = {
   async getAll() {

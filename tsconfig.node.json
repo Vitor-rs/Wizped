@@ -1,6 +1,7 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "composite": true,
     "allowSyntheticDefaultImports": true,
     "allowJs": true,

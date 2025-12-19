@@ -1,6 +1,7 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "composite": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
