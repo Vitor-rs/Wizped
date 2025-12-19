@@ -1,12 +1,13 @@
 # Documentação do Projeto
 
-> Gerado automaticamente em 18/12/2025 22:22:09
+> Gerado automaticamente em 18/12/2025 23:05:45
 > Caminho documentado: `C:\Users\Vitor\Documents\projetos\Wizped`
 
 ## Estrutura de Arquivos
 
 ```text
 Wizped
++--- .env
 +--- .github
 |    +--- agents
 |    |    \--- electron-architect.agent.md
@@ -131,6 +132,17 @@ Wizped
 ```
 
 ## Conteúdo dos Arquivos
+
+## .env
+
+```
+# Configurações do WizPed
+PRODUCT_NAME="WizPed System"
+
+# Credenciais do Turso (Cole aqui o que pegou no site)
+TURSO_DATABASE_URL="libsql://wizped-db-vitor-rs.aws-us-east-1.turso.io"
+TURSO_AUTH_TOKEN="eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3NjYxMTE3ODUsImlkIjoiODI4ZGRiOWEtNjMyNy00YmRmLThiZmItZTQ2ZGY4MjRmOTU1IiwicmlkIjoiYzI0OTc0MzEtNjUzMC00YTI1LTllNzctNzA5OGI3NjI2OTc3In0.l4CdWJXxx-tWSdBTW5wn5ps_oaqwTTMI5APFchfQ64v_vhR0QtMHDEDJ1fYS6iTDv5fnAU6wZ3Ap50krcL-LBQ"
+```
 
 ## .gitignore
 
@@ -364,13 +376,25 @@ python "%~dp0scripts\doc_project.py" %*
 
 ```typescript
 import { defineConfig } from 'drizzle-kit'
+import * as dotenv from 'dotenv'
+
+// Carrega variáveis do arquivo .env
+dotenv.config()
+
+const { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } = process.env
+
+if (!TURSO_DATABASE_URL || !TURSO_AUTH_TOKEN) {
+  throw new Error('❌ Credenciais do Turso não encontradas no .env')
+}
 
 export default defineConfig({
   schema: './electron/main/database/schema.ts',
   out: './electron/main/database/migrations',
-  dialect: 'sqlite',
+  dialect: 'sqlite', // Turso é compatível com SQLite
+  driver: 'turso', // Especificamos o driver aqui
   dbCredentials: {
-    url: './dev.db', // Development database
+    url: TURSO_DATABASE_URL,
+    authToken: TURSO_AUTH_TOKEN,
   },
 })
 
@@ -700,6 +724,7 @@ export default [
     "security:check": "npm run lint && npm run typecheck && npm audit --audit-level=moderate"
   },
   "dependencies": {
+    "@libsql/client": "^0.15.15",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-scroll-area": "^1.2.10",
     "@radix-ui/react-separator": "^1.1.8",
@@ -707,6 +732,7 @@ export default [
     "@radix-ui/react-tooltip": "^1.2.8",
     "better-sqlite3": "^11.3.0",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
     "drizzle-orm": "^0.33.0",
     "lucide-react": "^0.441.0",
     "react": "^18.3.1",
@@ -1836,36 +1862,82 @@ app.on('window-all-closed', () => {
 ## electron\main\database\client.ts
 
 ```typescript
-import Database from 'better-sqlite3'
-import { drizzle } from 'drizzle-orm/better-sqlite3'
+import { createClient } from '@libsql/client'
+import type { Client } from '@libsql/core/api'
+import { drizzle, type LibSQLDatabase } from 'drizzle-orm/libsql'
 import { app } from 'electron'
-import { join } from 'node:path'
+import { existsSync, mkdirSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import * as schema from './schema'
 
-const DB_NAME = 'app-data.db'
+const DB_FILENAME = 'wizped-local.db'
+
+const TURSO_URL = process.env.TURSO_DATABASE_URL
+const TURSO_TOKEN = process.env.TURSO_AUTH_TOKEN
 
 function getDatabasePath(): string {
-  const userDataPath = app.getPath('userData')
-  return join(userDataPath, DB_NAME)
+  if (app.isPackaged) {
+    return join(dirname(process.execPath), 'data', DB_FILENAME)
+  }
+  return join(process.cwd(), 'resources', DB_FILENAME)
 }
 
-let sqlite: Database.Database | null = null
-let db: ReturnType<typeof drizzle<typeof schema>> | null = null
+let client: Client | null = null
+let db: LibSQLDatabase<typeof schema> | null = null
 
-export function getDatabase(): ReturnType<typeof drizzle<typeof schema>> {
-  if (!db) {
-    sqlite = new Database(getDatabasePath())
-    sqlite.pragma('journal_mode = WAL')
-    sqlite.pragma('foreign_keys = ON')
-    db = drizzle(sqlite, { schema })
+export function getDatabase(): LibSQLDatabase<typeof schema> {
+  if (db) {
+    return db
   }
+
+  const dbPath = getDatabasePath()
+  const dbDir = dirname(dbPath)
+
+  if (!existsSync(dbDir)) {
+    mkdirSync(dbDir, { recursive: true })
+  }
+
+  const url = `file:${dbPath}`
+  const authToken = TURSO_TOKEN ?? undefined
+  const syncUrl = TURSO_URL ?? undefined
+  const isCloudEnabled = Boolean(syncUrl && authToken)
+
+  if (isCloudEnabled) {
+    console.log(`[WizPed] ☁️ Conectando...`)
+  } else {
+    console.error('⚠️ [WizPed] Offline (Sem credenciais)')
+  }
+
+  client = (createClient as unknown as (config: unknown) => Client)({
+    url,
+    authToken,
+    syncUrl,
+  })
+
+  if (isCloudEnabled) {
+    setInterval(() => {
+      void (async () => {
+        try {
+          await client?.sync()
+        } catch {
+          // Ignora erros de rede silenciosamente em background
+        }
+      })()
+    }, 60 * 1000)
+
+    void client.sync().catch(() => {
+      console.log('[Sync] Offline init')
+    })
+  }
+
+  db = drizzle(client, { schema })
   return db
 }
 
 export function closeDatabase(): void {
-  if (sqlite) {
-    sqlite.close()
-    sqlite = null
+  if (client) {
+    client.close()
+    client = null
     db = null
   }
 }
@@ -1878,25 +1950,52 @@ export function closeDatabase(): void {
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
 import { sql } from 'drizzle-orm'
 
-// Example entity schema - customize for your needs
+// --- USERS (Professores) ---
 export const users = sqliteTable('users', {
   id: text('id')
     .primaryKey()
     .$default(() => crypto.randomUUID()),
   name: text('name').notNull(),
   email: text('email').unique(),
-  createdAt: integer('created_at', { mode: 'timestamp' })
-    .notNull()
-    .default(sql`(unixepoch())`),
+  role: text('role').default('teacher'), // teacher | admin
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
   updatedAt: integer('updated_at', { mode: 'timestamp' })
-    .notNull()
     .default(sql`(unixepoch())`)
     .$onUpdate(() => new Date()),
 })
 
-// Inferred types for TypeScript
+// --- STUDENTS (Alunos) ---
+export const students = sqliteTable('students', {
+  id: text('id')
+    .primaryKey()
+    .$default(() => crypto.randomUUID()),
+  name: text('name').notNull(),
+
+  // Dados Wizard
+  book: text('book'), // Ex: W2, T8, W4
+  classTime: text('class_time'), // Ex: "Seg/Qua 18:00"
+
+  // Dados Pessoais/Responsável
+  birthDate: text('birth_date'), // YYYY-MM-DD
+  responsibleName: text('responsible_name'),
+  phone: text('phone'),
+
+  // Metadados
+  active: integer('active', { mode: 'boolean' }).default(true),
+  notes: text('notes'),
+
+  createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' })
+    .default(sql`(unixepoch())`)
+    .$onUpdate(() => new Date()),
+})
+
+// Inferência de Tipos
 export type User = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
+
+export type Student = typeof students.$inferSelect
+export type NewStudent = typeof students.$inferInsert
 
 ```
 

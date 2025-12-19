@@ -1,41 +1,27 @@
 ---
-activation: always_on
+trigger: always_on
 ---
 
 # Architecture & Structure
 
-## Feature-Based
-
-Code is organized by **Feature** (Domain) logic, not just technical type.
+## Feature-Based Architecture
+Code is organized by **Feature** (Domain) logic, adhering to Domain-Driven Design principles.
 
 ### Directory Map
-
-- electron/main: Backend logic (Node.js). NO React code.
-- electron/preload: Bridge (Context Isolation).
-- src/features/[feature-name]: Self-contained domains.
-- src/shared: Reusable components.
+- **electron/main**: Backend logic (Node.js). NO React code here.
+- **electron/preload**: Bridge (Context Isolation).
+- **src/features/[feature-name]**: Self-contained domains (stores, services, schemas).
+- **src/shared**: Reusable components and types.
 
 ### Documentation Structure
-
-- **.template/**: Template documentation (ARCHITECTURE.md, SECURITY.md)
-- **docs/**: Reserved for business documentation of projects using this template
+- **.agent/rules/**: The Source of Truth for all coding rules.
+- **.template/**: Static templates (e.g., `shadcn_guide`).
+- **docs/**: Business documentation.
 
 ## IPC Bridge & Security
-
-- **Sandbox**: Enabled in electron/main/index.ts for enhanced security.
-- **Type-Safe IPC**: Define events in src/shared/types/ipc.ts.
-- **Channel Whitelist**: All IPC channels must be in ALLOWED_CHANNELS in electron/preload/index.ts.
-
-## Adding New IPC Channels
-
-1. Add types in src/shared/types/ipc.ts
-2. Create handler in electron/main/ipc/handlers/
-3. Register handler in electron/main/ipc/index.ts
-4. **Update ALLOWED_CHANNELS** in electron/preload/index.ts
-5. Create service in src/features/
-
-See .template/SECURITY.md for full security documentation.
+- **Sandbox**: Enabled.
+- **Communication**: Renderer NEVER imports `electron`. Use `window.electronAPI.invoke()`.
+- **Validation**: All channels must be whitelisted in `electron/preload/index.ts`.
 
 ## Structure Visualization
-
-Run: python scripts/tree_project.py
+To see the current state, run: `python scripts/tree_project.py`

@@ -1,13 +1,13 @@
 ---
-activation: always_on
+trigger: always_on
 ---
 
 # Shadcn/UI Guidelines
 
 ## Usage Policy
 
-We have a local copy of the Shadcn documentation and components in `.agent/shadcn_guide`.
-**YOU MUST PREFER THIS LOCAL GUIDE OVER INTERNET SEARCH.**
+We have a local copy of the Shadcn documentation and components in `.templat\shadcn_guide`.
+**YOU MUST PREFER THIS LOCAL GUIDE OVER INTERNET SEARCH.**e
 
 ## How to Explore the Guide
 
