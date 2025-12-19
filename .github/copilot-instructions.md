@@ -13,3 +13,7 @@ Sua Fonte da Verdade é `.agent/rules`.
   - Nativas do VS Code (Terminal, Editor).
   - **Markitdown MCP**: Use para converter/ler formatos diversos se necessário.
   - **Atenção**: Você NÃO tem o MCP do Shadcn configurado (diferente do Antigravity). Use o guia local em `.template/shadcn_guide`.
+
+  ## 🚨 Turso Database Rules
+1. **Nomeclatura**: Tabela SEMPRE em Português se a Feature for em Português (`estudantes` > `students`).
+2. **Conflitos**: Se migração falhar por tabela existente, considere `DROP` da incorreta ou `npm run db:push`.

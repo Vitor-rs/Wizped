@@ -39,3 +39,22 @@ When asked to "Create a Feature" or "Scaffold", follow these exact steps:
 1.  Edit `electron/main/database/schema.ts`.
 2.  Run `npm run db:generate`.
 3.  Run `npm run db:migrate`.
+
+## 🛡️ Turso & Database Guidelines (CRITICAL)
+
+### Naming Conventions
+- **Language Consistency**: Feature name = Table name.
+  - Ex: Feature `estudantes` -> Table `estudantes`.
+  - ❌ Feature `estudantes` -> Table `students` (PROIBIDO).
+
+### Migration Workflow
+1. **Schema**: Edit `electron/main/database/schema.ts`.
+2. **Generate**: `npm run db:generate`.
+3. **Apply**:
+   - `npm run db:migrate` (Production/Standard).
+   - `npm run db:push` (Development/Conflict Resolution).
+
+### Conflict Handling
+- If a table exists with the wrong name (e.g., english vs portuguese conflict):
+  - **DROP** the wrong table immediately.
+  - Run `db:push` to sync correct schema.

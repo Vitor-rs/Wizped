@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+// NOTE: Ensure the table name matches the feature domain in Portuguese (e.g., 'estudantes' for 'students')
+// This avoids conflicts and mismatched expectations in Turso.
 export const {{camelCase name}}Schema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1, 'Nome é obrigatório'),
