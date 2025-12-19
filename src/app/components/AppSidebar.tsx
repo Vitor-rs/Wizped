@@ -1,18 +1,22 @@
+'use client'
+
+import * as React from 'react'
 import { BookOpen, Settings2, SquareTerminal, User, Users } from 'lucide-react'
 
+import { NavMain } from '@/shared/components/nav-main'
+import { NavUser } from '@/shared/components/nav-user'
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupLabel,
   SidebarHeader,
+  SidebarRail,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuButton,
 } from '@/shared/components/ui/sidebar'
 
-// Sample data for the sidebar - mimicking a "Pro" dashboard structure
+// This is sample data.
 const data = {
   user: {
     name: 'Admin User',
@@ -60,78 +64,29 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <BookOpen className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Wizped</span>
-                  <span className="truncate text-xs">Gestão Escolar</span>
-                </div>
-              </a>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground group-data-[collapsible=icon]:!justify-center group-data-[collapsible=icon]:!p-0"
+            >
+              <div className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                <BookOpen className="size-4" />
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
+                <span className="truncate font-semibold">Wizped</span>
+                <span className="truncate text-xs">Gestão Escolar</span>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Plataforma</SidebarGroupLabel>
-          <SidebarMenu>
-            {data.navMain.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton tooltip={item.title} isActive={item.isActive}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </SidebarMenuButton>
-                {/* We can add collapsible submenus here later if needed, for now flat list inside groups */}
-                <SidebarMenu>
-                  {item.items.map((subItem) => (
-                    <SidebarMenuItem key={subItem.title}>
-                      <SidebarMenuButton asChild tooltip={subItem.title} className="pl-8">
-                        <a href={subItem.url}>
-                          <subItem.icon className="mr-2 size-4" />
-                          <span>{subItem.title}</span>
-                        </a>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroup>
-
-        <SidebarGroup className="mt-auto">
-          <SidebarGroupLabel>Sistema</SidebarGroupLabel>
-          <SidebarMenu>
-            {data.navSecondary.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton tooltip={item.title}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroup>
+        <NavMain items={data.navMain} />
+        {/* We can re-add NavSecondary or other groups here if implemented */}
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{data.user.name}</span>
-                <span className="truncate text-xs">{data.user.email}</span>
-              </div>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <NavUser user={data.user} />
       </SidebarFooter>
-      {/* <SidebarRail /> */}
+      <SidebarRail />
     </Sidebar>
   )
 }

@@ -3,15 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui
 import { Users, GraduationCap } from 'lucide-react'
 import { useEstudantesStore } from '@/features/estudantes/stores/estudantes.store'
 import { useUsersStore } from '@/features/users/stores/users.store'
+import { useLayoutStore } from '@/shared/stores/layout.store'
 
 export function DashboardPage() {
   const { estudantes, fetchEstudantes } = useEstudantesStore()
   const { users, fetchUsers } = useUsersStore()
+  const { setTitle } = useLayoutStore()
 
   useEffect(() => {
+    setTitle('Dashboard')
     void fetchEstudantes()
     void fetchUsers()
-  }, [fetchEstudantes, fetchUsers])
+  }, [fetchEstudantes, fetchUsers, setTitle])
 
   return (
     <div className="p-6">
