@@ -1,20 +1,11 @@
 import { z } from 'zod'
 
 export const userSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
-  email: z.string().email('Email inválido').optional().nullable(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  id: z.string().optional(),
+  name: z.string().min(1, 'Nome é obrigatório'),
+  email: z.string().email('Email inválido'),
+  password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
+  role: z.enum(['teacher', 'admin']).default('teacher'),
 })
 
-export const createUserSchema = userSchema.omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-})
-
-export const updateUserSchema = createUserSchema.partial()
-
-export type UserFormData = z.infer<typeof createUserSchema>
-export type UpdateUserFormData = z.infer<typeof updateUserSchema>
+export type UserFormValues = z.infer<typeof userSchema>

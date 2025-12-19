@@ -3,6 +3,7 @@ dist
 out
 *.log
 *.db
+*.db-*
 .env
 .env.local
 .DS_Store

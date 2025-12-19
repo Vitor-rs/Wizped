@@ -4,18 +4,19 @@ import * as dotenv from 'dotenv'
 // Carrega variáveis do arquivo .env
 dotenv.config()
 
-// const { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } = process.env
+const { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } = process.env
 
-// if (!TURSO_DATABASE_URL || !TURSO_AUTH_TOKEN) {
-//   throw new Error('❌ Credenciais do Turso não encontradas no .env')
-// }
+if (!TURSO_DATABASE_URL || !TURSO_AUTH_TOKEN) {
+  throw new Error('❌ Credenciais do Turso não encontradas no .env')
+}
 
 export default defineConfig({
   schema: './electron/main/database/schema.ts',
   out: './electron/main/database/migrations',
   dialect: 'sqlite',
-  // driver: 'turso', // REMOVIDO: Vamos usar SQLite local para dev
+  driver: 'turso',
   dbCredentials: {
-    url: 'file:resources/wizped-local.db', // Aponta para o banco local
+    url: TURSO_DATABASE_URL,
+    authToken: TURSO_AUTH_TOKEN,
   },
 })

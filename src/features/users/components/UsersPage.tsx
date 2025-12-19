@@ -1,15 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
-import { useUserStore } from '../stores/user.store'
-import { userService } from '../services/user.service'
-import type { User, NewUser } from '../../../../electron/main/database/schema'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/shared/components/ui/table'
+import { useEffect, useState } from 'react'
+import { useUsersStore } from '../stores/users.store'
+import { UserForm } from './UserForm'
+import { UserList } from './UserList'
 import { Button } from '@/shared/components/ui/button'
 import {
   Dialog,
@@ -18,155 +10,80 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/shared/components/ui/dialog'
-import { Input } from '@/shared/components/ui/input'
-import { Label } from '@/shared/components/ui/label'
-
-interface UserFormState {
-  name: string
-  email: string
-  password: string
-  role: string
-}
+import { Plus } from 'lucide-react'
+import type { UserFormValues } from '../schemas/user.schema'
+import type { User } from '@main/database/schema'
 
 export function UsersPage() {
-  const { isLoading, error, setLoading, setError } = useUserStore()
-  const [users, setUsers] = useState<User[]>([])
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [formData, setFormData] = useState<UserFormState>({
-    name: '',
-    email: '',
-    password: '',
-    role: 'teacher',
-  })
-
-  const fetchUsers = useCallback(async () => {
-    setLoading(true)
-    try {
-      const data = await userService.getAll()
-      setUsers(data)
-      setError(null)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao buscar usuários')
-    } finally {
-      setLoading(false)
-    }
-  }, [setLoading, setError])
+  const { users, isLoading, fetchUsers, createUser, updateUser, deleteUser } = useUsersStore()
+  const [isOpen, setIsOpen] = useState(false)
+  const [editingUser, setEditingUser] = useState<User | null>(null)
 
   useEffect(() => {
     void fetchUsers()
   }, [fetchUsers])
 
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.name || !formData.email || !formData.password) return
-
-    setLoading(true)
-    try {
-      const newUser: NewUser = {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        role: formData.role ?? 'teacher',
-      }
-      await userService.create(newUser)
-      await fetchUsers()
-      setIsDialogOpen(false)
-      setFormData({ name: '', email: '', password: '', role: 'teacher' })
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao criar usuário')
-    } finally {
-      setLoading(false)
+  const handleSubmit = async (data: UserFormValues) => {
+    if (editingUser) {
+      await updateUser(editingUser.id, data)
+    } else {
+      await createUser(data)
     }
+    setIsOpen(false)
+    setEditingUser(null)
+  }
+
+  const handleEdit = (user: User) => {
+    setEditingUser(user)
+    setIsOpen(true)
+  }
+
+  const handleDelete = async (id: string) => {
+    if (confirm('Tem certeza que deseja excluir este usuário?')) {
+      await deleteUser(id)
+    }
+  }
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open)
+    if (!open) setEditingUser(null)
   }
 
   return (
     <div className="p-6">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Usuários</h1>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
           <DialogTrigger asChild>
-            <Button>Novo Usuário</Button>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" /> Novo Usuário
+            </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Cadastrar Usuário</DialogTitle>
+              <DialogTitle>{editingUser ? 'Editar Usuário' : 'Novo Usuário'}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleCreate} className="space-y-4">
-              <div>
-                <Label htmlFor="name">Nome</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const value = e.target.value
-                    setFormData((prev) => ({ ...prev, name: value }))
-                  }}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const value = e.target.value
-                    setFormData((prev) => ({ ...prev, email: value }))
-                  }}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="password">Senha</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const value = e.target.value
-                    setFormData((prev) => ({ ...prev, password: value }))
-                  }}
-                  required
-                />
-              </div>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Salvando...' : 'Salvar'}
-              </Button>
-            </form>
+            <UserForm
+              onSubmit={handleSubmit}
+              isLoading={isLoading}
+              defaultValues={
+                editingUser
+                  ? {
+                      name: editingUser.name,
+                      email: editingUser.email ?? '',
+                      role: editingUser.role as 'teacher' | 'admin',
+                      // Password is optional on edit, handled by backend usually, but for simplicity here we might need adjustment if logic requires it.
+                      // In a real app, password updates are separate. For this MVP, we assume password might be re-entered or handle partial updates.
+                      // The schema requires password min 6. We might need a partial schema for updates in the future.
+                    }
+                  : undefined
+              }
+            />
           </DialogContent>
         </Dialog>
       </div>
 
-      {error && <div className="mb-4 text-red-500">{error}</div>}
-
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nome</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Função</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.role}</TableCell>
-              </TableRow>
-            ))}
-            {users.length === 0 && !isLoading && (
-              <TableRow>
-                <TableCell colSpan={3} className="text-center">
-                  Nenhum usuário encontrado
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <UserList users={users} isLoading={isLoading} onEdit={handleEdit} onDelete={handleDelete} />
     </div>
   )
 }

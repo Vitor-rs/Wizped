@@ -8,9 +8,6 @@ import * as schema from './schema'
 
 const DB_FILENAME = 'wizped-local.db'
 
-const TURSO_URL = process.env.TURSO_DATABASE_URL
-const TURSO_TOKEN = process.env.TURSO_AUTH_TOKEN
-
 function getDatabasePath(): string {
   if (app.isPackaged) {
     return join(dirname(process.execPath), 'data', DB_FILENAME)
@@ -34,8 +31,8 @@ export function getDatabase(): LibSQLDatabase<typeof schema> {
   }
 
   const url = `file:${dbPath}`
-  const authToken = TURSO_TOKEN ?? undefined
-  const syncUrl = TURSO_URL ?? undefined
+  const authToken = process.env.TURSO_AUTH_TOKEN ?? undefined
+  const syncUrl = process.env.TURSO_DATABASE_URL ?? undefined
   const isCloudEnabled = Boolean(syncUrl && authToken)
 
   if (isCloudEnabled) {

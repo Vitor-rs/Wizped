@@ -1,37 +1,29 @@
-// Estudantes Service
-// IPC calls to interact with main process
+import type { z } from 'zod'
+import { studentSchema } from '../schemas/student.schema'
+import type { Student, NewStudent } from '@main/database/schema'
 
-// TODO: Import your feature types after defining them
-// import type { Estudantes, NewEstudantes } from '../types'
+class EstudantesService {
+  async getAll(): Promise<Student[]> {
+    return await window.electronAPI.invoke('estudantes:getAll')
+  }
 
-import type { NewStudent } from '../../../../electron/main/database/schema'
+  async getById(id: string): Promise<Student | null> {
+    return await window.electronAPI.invoke('estudantes:getById', id)
+  }
 
-export const estudantesService = {
-  async getAll() {
-    return window.electronAPI.invoke('estudantes:getAll')
-  },
+  async create(data: z.infer<typeof studentSchema>): Promise<Student> {
+    const parsed = studentSchema.parse(data)
+    return await window.electronAPI.invoke('estudantes:create', parsed as NewStudent)
+  }
 
-  async getById(id: string) {
-    return window.electronAPI.invoke('estudantes:getById', id)
-  },
+  async update(id: string, data: Partial<z.infer<typeof studentSchema>>): Promise<Student> {
+    const parsed = studentSchema.partial().parse(data)
+    return await window.electronAPI.invoke('estudantes:update', id, parsed as Partial<NewStudent>)
+  }
 
-  async create(data: NewStudent) {
-    return window.electronAPI.invoke('estudantes:create', data)
-  },
-
-  async update(id: string, data: Partial<NewStudent>) {
-    return window.electronAPI.invoke('estudantes:update', id, data)
-  },
-
-  async delete(id: string) {
-    return window.electronAPI.invoke('estudantes:delete', id)
-  },
+  async delete(id: string): Promise<boolean> {
+    return await window.electronAPI.invoke('estudantes:delete', id)
+  }
 }
 
-/*
- * IMPORTANT: After creating this service, you must:
- * 1. Add IPC types in src/shared/types/ipc.ts
- * 2. Update ALLOWED_CHANNELS in electron/preload/index.ts
- * 3. Create handler in electron/main/ipc/handlers/estudantes.handlers.ts
- * 4. Register handler in electron/main/ipc/index.ts
- */
+export const estudantesService = new EstudantesService()

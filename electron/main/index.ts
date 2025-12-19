@@ -1,5 +1,10 @@
 import { app, BrowserWindow, shell, session } from 'electron'
 import { join } from 'node:path'
+import * as dotenv from 'dotenv'
+
+// Carrega variáveis de ambiente (.env)
+dotenv.config()
+
 import { registerIpcHandlers } from './ipc'
 import { closeDatabase } from './database/client'
 
