@@ -15,8 +15,8 @@ export const users = sqliteTable('users', {
     .$onUpdate(() => new Date()),
 })
 
-// --- STUDENTS (Alunos) ---
-export const students = sqliteTable('students', {
+// --- ESTUDANTES (Alunos) ---
+export const estudantes = sqliteTable('estudantes', {
   id: text('id')
     .primaryKey()
     .$default(() => crypto.randomUUID()),
@@ -45,5 +45,5 @@ export const students = sqliteTable('students', {
 export type User = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
 
-export type Student = typeof students.$inferSelect
-export type NewStudent = typeof students.$inferInsert
+export type Student = typeof estudantes.$inferSelect
+export type NewStudent = typeof estudantes.$inferInsert
