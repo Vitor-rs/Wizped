@@ -4,43 +4,46 @@ import { Users, GraduationCap } from 'lucide-react'
 import { useEstudantesStore } from '@/features/estudantes/stores/estudantes.store'
 import { useUsersStore } from '@/features/users/stores/users.store'
 import { useLayoutStore } from '@/shared/stores/layout.store'
+import { PageContainer, PageContent, PageHeader } from '@/shared/components/layout/page-layout'
 
 export function DashboardPage() {
   const { estudantes, fetchEstudantes } = useEstudantesStore()
   const { users, fetchUsers } = useUsersStore()
-  const { setTitle } = useLayoutStore()
+  const { setBreadcrumbs } = useLayoutStore()
 
   useEffect(() => {
-    setTitle('Dashboard')
+    setBreadcrumbs([{ label: 'Dashboard' }])
     void fetchEstudantes()
     void fetchUsers()
-  }, [fetchEstudantes, fetchUsers, setTitle])
+  }, [fetchEstudantes, fetchUsers, setBreadcrumbs])
 
   return (
-    <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold tracking-tight">Dashboard</h1>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Estudantes</CardTitle>
-            <GraduationCap className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{estudantes.length}</div>
-            <p className="text-xs text-muted-foreground">Alunos matriculados</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Usuários</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{users.length}</div>
-            <p className="text-xs text-muted-foreground">Professores e Admins</p>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+    <PageContainer>
+      <PageHeader title="Dashboard" description="Visão geral do sistema" />
+      <PageContent>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total de Estudantes</CardTitle>
+              <GraduationCap className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{estudantes.length}</div>
+              <p className="text-xs text-muted-foreground">Alunos matriculados</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total de Usuários</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{users.length}</div>
+              <p className="text-xs text-muted-foreground">Professores e Admins</p>
+            </CardContent>
+          </Card>
+        </div>
+      </PageContent>
+    </PageContainer>
   )
 }
