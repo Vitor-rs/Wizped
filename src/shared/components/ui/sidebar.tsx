@@ -287,33 +287,39 @@ function SidebarInput({ className, ...props }: React.ComponentProps<typeof Input
   )
 }
 
-function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot="sidebar-header"
-      data-sidebar="header"
-      className={cn(
-        'flex flex-col gap-2 overflow-hidden p-2 group-data-[collapsible=icon]:p-0',
-        className
-      )}
-      {...props}
-    />
-  )
-}
+const SidebarHeader = React.forwardRef<HTMLDivElement, React.ComponentProps<'div'>>(
+  ({ className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        data-sidebar="header"
+        className={cn(
+          'flex flex-col gap-2 overflow-hidden p-2 group-data-[collapsible=icon]:px-0',
+          className
+        )}
+        {...props}
+      />
+    )
+  }
+)
+SidebarHeader.displayName = 'SidebarHeader'
 
-function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot="sidebar-footer"
-      data-sidebar="footer"
-      className={cn(
-        'flex flex-col gap-2 overflow-hidden p-2 group-data-[collapsible=icon]:p-0',
-        className
-      )}
-      {...props}
-    />
-  )
-}
+const SidebarFooter = React.forwardRef<HTMLDivElement, React.ComponentProps<'div'>>(
+  ({ className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        data-sidebar="footer"
+        className={cn(
+          'flex flex-col gap-2 overflow-hidden p-2 group-data-[collapsible=icon]:px-0',
+          className
+        )}
+        {...props}
+      />
+    )
+  }
+)
+SidebarFooter.displayName = 'SidebarFooter'
 
 function SidebarSeparator({ className, ...props }: React.ComponentProps<typeof Separator>) {
   return (
