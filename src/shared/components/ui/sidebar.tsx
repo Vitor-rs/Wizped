@@ -294,7 +294,7 @@ const SidebarHeader = React.forwardRef<HTMLDivElement, React.ComponentProps<'div
         ref={ref}
         data-sidebar="header"
         className={cn(
-          'flex flex-col gap-2 overflow-hidden p-2 group-data-[collapsible=icon]:px-0',
+          'flex flex-col gap-2 overflow-hidden p-2 transition-[padding] duration-200 ease-in-out group-data-[collapsible=icon]:px-0',
           className
         )}
         {...props}
@@ -311,7 +311,7 @@ const SidebarFooter = React.forwardRef<HTMLDivElement, React.ComponentProps<'div
         ref={ref}
         data-sidebar="footer"
         className={cn(
-          'flex flex-col gap-2 overflow-hidden p-2 group-data-[collapsible=icon]:px-0',
+          'flex flex-col gap-2 overflow-hidden p-2 transition-[padding] duration-200 ease-in-out group-data-[collapsible=icon]:px-0',
           className
         )}
         {...props}
