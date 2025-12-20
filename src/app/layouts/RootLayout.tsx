@@ -10,11 +10,31 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/shared/components/ui/breadcrumb'
-import { useLayoutStore } from '@/shared/stores/layout.store'
 import { Fragment } from 'react'
 
+import { useLocation } from 'react-router-dom'
+
 export function RootLayout() {
-  const { breadcrumbs } = useLayoutStore()
+  const location = useLocation()
+
+  const getBreadcrumbs = (pathname: string): { label: string; href?: string }[] => {
+    switch (pathname) {
+      case '/':
+        return [{ label: 'Dashboard' }]
+      case '/estudantes':
+        return [{ label: 'Gestão', href: '#' }, { label: 'Estudantes' }]
+      case '/users':
+        return [{ label: 'Gestão', href: '#' }, { label: 'Usuários' }]
+      default:
+        // Fallback for nested or unknown routes
+        return pathname
+          .split('/')
+          .filter(Boolean)
+          .map((segment) => ({ label: segment.charAt(0).toUpperCase() + segment.slice(1) }))
+    }
+  }
+
+  const breadcrumbs = getBreadcrumbs(location.pathname)
 
   return (
     <SidebarProvider defaultOpen={true}>

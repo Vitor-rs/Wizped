@@ -30,7 +30,7 @@ export function PageHeader({
   return (
     <header
       className={cn(
-        'flex h-14 shrink-0 items-center justify-between gap-2 border-b bg-sidebar px-6 transition-[width] ease-linear',
+        'flex h-14 shrink-0 items-center justify-between gap-2 border-b bg-sidebar px-6 transition-[width] duration-200 ease-linear animate-in fade-in slide-in-from-top-1',
         className
       )}
       {...props}
@@ -51,7 +51,13 @@ interface PageContentProps extends React.ComponentProps<'main'> {
 
 export function PageContent({ className, children, ...props }: PageContentProps) {
   return (
-    <main className={cn('flex-1 overflow-auto p-6', className)} {...props}>
+    <main
+      className={cn(
+        'flex-1 overflow-auto p-6 duration-300 animate-in fade-in slide-in-from-bottom-2',
+        className
+      )}
+      {...props}
+    >
       <div
         className={cn(
           'h-full w-full rounded-xl border bg-card text-card-foreground shadow-sm',

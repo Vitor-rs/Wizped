@@ -13,7 +13,6 @@ import {
 import { Plus } from 'lucide-react'
 import type { StudentFormValues } from '../schemas/student.schema'
 import type { Student } from '@main/database/schema'
-import { useLayoutStore } from '@/shared/stores/layout.store'
 import { PageContainer, PageContent, PageHeader } from '@/shared/components/layout/page-layout'
 
 export function EstudantesPage() {
@@ -21,12 +20,10 @@ export function EstudantesPage() {
     useEstudantesStore()
   const [isOpen, setIsOpen] = useState(false)
   const [editingStudent, setEditingStudent] = useState<Student | null>(null)
-  const { setBreadcrumbs } = useLayoutStore()
 
   useEffect(() => {
-    setBreadcrumbs([{ label: 'Gestão', href: '#' }, { label: 'Estudantes' }])
     void fetchEstudantes()
-  }, [fetchEstudantes, setBreadcrumbs])
+  }, [fetchEstudantes])
 
   const handleSubmit = async (data: StudentFormValues) => {
     if (editingStudent) {

@@ -3,19 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui
 import { Users, GraduationCap } from 'lucide-react'
 import { useEstudantesStore } from '@/features/estudantes/stores/estudantes.store'
 import { useUsersStore } from '@/features/users/stores/users.store'
-import { useLayoutStore } from '@/shared/stores/layout.store'
+
 import { PageContainer, PageContent, PageHeader } from '@/shared/components/layout/page-layout'
 
 export function DashboardPage() {
   const { estudantes, fetchEstudantes } = useEstudantesStore()
   const { users, fetchUsers } = useUsersStore()
-  const { setBreadcrumbs } = useLayoutStore()
 
   useEffect(() => {
-    setBreadcrumbs([{ label: 'Dashboard' }])
     void fetchEstudantes()
     void fetchUsers()
-  }, [fetchEstudantes, fetchUsers, setBreadcrumbs])
+  }, [fetchEstudantes, fetchUsers])
 
   return (
     <PageContainer>
