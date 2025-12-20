@@ -54,12 +54,12 @@ const data = {
   navSecondary: [
     {
       title: 'Configurações',
-      url: '#',
+      url: '/settings',
       icon: Settings2,
       items: [
         {
           title: 'Geral',
-          url: '#',
+          url: '/settings',
         },
       ],
     },
@@ -90,7 +90,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        {/* We can re-add NavSecondary or other groups here if implemented */}
+        <NavMain items={data.navSecondary} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
