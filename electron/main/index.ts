@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import * as dotenv from 'dotenv'
 
 // Carrega variáveis de ambiente (.env)
-dotenv.config()
+dotenv.config({ quiet: true })
 
 import { registerIpcHandlers } from './ipc'
 import { closeDatabase } from './database/client'

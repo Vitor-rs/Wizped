@@ -60,9 +60,14 @@ export function getDatabase(): LibSQLDatabase<typeof schema> {
       })()
     }, 60 * 1000)
 
-    void client.sync().catch(() => {
-      console.log('[Sync] Offline init')
-    })
+    void client
+      .sync()
+      .then(() => {
+        console.log('\x1b[32m(v)\x1b[0m [WizPed] Sincronizado com sucesso')
+      })
+      .catch(() => {
+        console.log('[Sync] Offline init')
+      })
   }
 
   db = drizzle(client, { schema })

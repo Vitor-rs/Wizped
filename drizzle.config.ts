@@ -2,7 +2,7 @@ import { defineConfig } from 'drizzle-kit'
 import * as dotenv from 'dotenv'
 
 // Carrega variáveis do arquivo .env
-dotenv.config()
+dotenv.config({ quiet: true })
 
 const { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } = process.env
 

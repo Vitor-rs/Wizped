@@ -23,7 +23,6 @@ interface StudentFormProps {
 
 export function StudentForm({ defaultValues, onSubmit, isLoading }: StudentFormProps) {
   const form = useForm<StudentFormValues>({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     resolver: zodResolver(studentSchema) as Resolver<StudentFormValues>,
     defaultValues: {
       name: '',
