@@ -30,7 +30,7 @@ export function PageHeader({
   return (
     <header
       className={cn(
-        'flex h-14 shrink-0 items-center justify-between gap-2 border-b bg-sidebar px-6 transition-[width] duration-200 ease-linear animate-in fade-in slide-in-from-top-1',
+        'flex h-14 shrink-0 items-center justify-between gap-2 border-b bg-background px-6 transition-[width] duration-200 ease-linear animate-in fade-in slide-in-from-top-1',
         className
       )}
       {...props}
